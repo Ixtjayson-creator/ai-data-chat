@@ -31,7 +31,7 @@ echo "[3/4] Verifying Virtual Environment..."
 if [ ! -f "$DIR/venv/bin/python3" ]; then
     echo "Virtual environment not found. Creating it..."
     python3 -m venv "$DIR/venv"
-    "$DIR/venv/bin/pip" install fastapi uvicorn faiss-cpu sentence-transformers pypdf pandas openpyxl pdfminer.six requests
+    "$DIR/venv/bin/pip" install fastapi uvicorn faiss-cpu sentence-transformers pypdf pandas openpyxl pdfminer.six requests python-dotenv
 fi
 
 # 4. Start Server

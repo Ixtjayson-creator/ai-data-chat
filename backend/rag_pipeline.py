@@ -6,15 +6,12 @@ from vector_store.faiss_store import create_index, add_embeddings, search
 # Dimension for all-MiniLM-L6-v2 embeddings
 EMBEDDING_DIMENSION = 384
 
-def index_document(text: str):
+def index_document(text: str, source: str = "Unknown"):
     """
     RAG Indexing Pipeline:
     1. Splits document text into chunks.
     2. Generates embeddings for chunks.
-    3. Stores embeddings and text in FAISS.
-    
-    Args:
-        text (str): The full text of the document to index.
+    3. Stores embeddings, text, and source metadata in FAISS.
     """
     if not text:
         logging.warning("Received empty text for indexing.")
@@ -31,14 +28,10 @@ def index_document(text: str):
             logging.error("Failed to generate embeddings.")
             return
 
-        # 3. Initialize FAISS index if not already done
-        # (In a production app, we might check if index exists or load from disk)
-        create_index(EMBEDDING_DIMENSION)
+        # 3. Store in FAISS with source metadata
+        add_embeddings(embeddings, chunks, source=source)
         
-        # 4. Store in FAISS
-        add_embeddings(embeddings, chunks)
-        
-        logging.info(f"Successfully indexed document with {len(chunks)} chunks.")
+        logging.info(f"Successfully indexed '{source}' with {len(chunks)} chunks.")
         
     except Exception as e:
         logging.error(f"Error in indexing pipeline: {e}")
@@ -47,14 +40,8 @@ def retrieve_context(query: str) -> str:
     """
     RAG Query Pipeline:
     1. Embeds user question.
-    2. Retrieves top relevant chunks from FAISS.
-    3. Returns them as a single context string.
-    
-    Args:
-        query (str): The user's query/question.
-        
-    Returns:
-        str: Concatenated relevant chunks for LLM context.
+    2. Retrieves top relevant chunks + metadata from FAISS.
+    3. Returns formatted context with source citations.
     """
     if not query:
         return ""
@@ -64,12 +51,17 @@ def retrieve_context(query: str) -> str:
         query_vector = embed_query(query)
 
         # 2. Retrieve top relevant chunks (increased k for better context)
-        relevant_chunks = search(query_vector, top_k=8)
+        relevant_matches = search(query_vector, top_k=8)
         
-        # 3. Join them into a context block
-        context = "\n\n---\n\n".join(relevant_chunks)
-        
-        return context
+        # 3. Format as a citation-rich context block
+        context_parts = []
+        for match in relevant_matches:
+            # match is now a dict: {'text': str, 'source': str}
+            text = match.get('text', '')
+            source = match.get('source', 'Unknown Document')
+            context_parts.append(f"[Source: {source}]\n{text}")
+            
+        return "\n\n---\n\n".join(context_parts)
         
     except Exception as e:
         logging.error(f"Error in retrieval pipeline: {e}")
