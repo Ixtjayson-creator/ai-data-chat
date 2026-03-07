@@ -27,12 +27,18 @@ def load_excel(file_path: str) -> str:
                 continue
                 
             # Add a header for each sheet to maintain context in RAG
-            output_text.append(f"--- Sheet: {sheet_name} ---")
+            output_text.append(f"### [Excel Sheet: {sheet_name}]")
             
-            # Convert dataframe to readable string
-            # index=False removes row numbers
-            output_text.append(df.to_string(index=False))
-            output_text.append("\n") # Spacer between sheets
+            # Convert each row into a structured record for better LLM comprehension
+            for i, row in df.iterrows():
+                record_lines = [f"#### Record {i+1} in {sheet_name}:"]
+                for col in df.columns:
+                    val = row[col]
+                    record_lines.append(f"- {col}: {val}")
+                output_text.append("\n".join(record_lines))
+                output_text.append("") # Small spacer
+            
+            output_text.append("\n") # Larger spacer between sheets
             
         return "\n".join(output_text).strip() if output_text else "The Excel file contains no data."
         

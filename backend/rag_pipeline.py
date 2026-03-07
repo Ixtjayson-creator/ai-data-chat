@@ -62,12 +62,12 @@ def retrieve_context(query: str) -> str:
     try:
         # 1. Embed user query
         query_vector = embed_query(query)
-        
-        # 2. Retrieve top relevant chunks
-        relevant_chunks = search(query_vector, top_k=4)
+
+        # 2. Retrieve top relevant chunks (increased k for better context)
+        relevant_chunks = search(query_vector, top_k=8)
         
         # 3. Join them into a context block
-        context = "\n\n".join(relevant_chunks)
+        context = "\n\n---\n\n".join(relevant_chunks)
         
         return context
         

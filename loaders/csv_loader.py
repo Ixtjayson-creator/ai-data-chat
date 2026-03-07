@@ -25,9 +25,16 @@ def load_csv(file_path: str) -> str:
         if df.empty:
             return ""
 
-        # Convert to a readable string format preserving structure
-        # index=False removes the row numbers which are usually irrelevant for RAG content
-        return df.to_string(index=False)
+        # Convert each row into a structured record for better LLM comprehension
+        records = []
+        for i, row in df.iterrows():
+            record_lines = [f"### Record {i+1}:"]
+            for col in df.columns:
+                val = row[col]
+                record_lines.append(f"- {col}: {val}")
+            records.append("\n".join(record_lines))
+            
+        return "\n\n".join(records)
 
     except FileNotFoundError:
         return f"Error: The file at {file_path} was not found."
