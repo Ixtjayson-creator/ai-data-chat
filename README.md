@@ -1,89 +1,61 @@
 # DataMind Edge AI 🚀
 
-A high-performance, **serverless** document intelligence platform that runs entirely in your browser. No data ever leaves your machine—even the AI reasoning is local.
+A high-performance, **completely serverless** document intelligence platform that runs entirely in your browser. Using `Transformers.js` and modern web technologies, DataMind Edge AI provides a private, secure, and fast way to analyze your documents without ever sending data to a server.
 
 ## ✨ Key Features
-- **Browser-Native AI**: Powered by `Transformers.js` (WebGPU accelerated).
-- **Zero-Backend**: No server required. Simply open `chat.html`.
-- **Absolute Privacy**: Documents are indexed and queried in your browser's private memory.
-- **Smart RAG**: Supports PDF, CSV, and Excel with semantic chunking and source citations.
-- **Enterprise UI**: Premium glassmorphism design with professional markdown rendering.
+- **Browser-Native AI**: Powered by `HuggingFace Transformers.js (v3)` with WebGPU acceleration.
+- **Zero-Backend**: No Python, no node.js, and no database required. It's just HTML, CSS, and JavaScript.
+- **Absolute Privacy**: Your documents are processed, indexed, and queried entirely on your local machine.
+- **Smart RAG**: Robust Retrieval-Augmented Generation that supports PDF, CSV, and Excel formats.
+- **Source Citations**: The AI cites specific files (e.g., `[Source: data.csv]`) for every claim it makes.
+- **Hardware Agnostic**: Automatically falls back to high-performance WASM if WebGPU is not supported by your browser/hardware.
 
 ## 🛠️ How to Use
-1.  **Open** the `frontend/chat.html` file in any modern browser (Chrome/Edge recommended for WebGPU).
-2.  **Wait** a few seconds for the AI Intelligence engine to initialize (first-time download is ~150MB).
-3.  **Upload** your documents in the sidebar.
-4.  **Chat** with your data!
+
+### Quick Start (The Easiest Way)
+Because the app uses Web Workers, browsers require it to be served over a local server (even though there is no code running on that server).
+
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/Ixtjayson-creator/Aidata.git
+    cd Aidata
+    ```
+2.  **Start a local server**:
+    ```bash
+    # If you have Python:
+    python3 -m http.server 8080
+    ```
+3.  **Open in Browser**:
+    Visit `http://localhost:8080/frontend/chat.html`
+
+4.  **Initialize & Chat**:
+    - Wait a few seconds for the AI engine to download (it will be cached for future use).
+    - Upload your documents in the sidebar.
+    - Start asking questions!
 
 ## 🧠 Technology Stack
-- **AI Core**: Transformers.js (v2/v3).
-- **Models**: BGE-Small (Embeddings) + Qwen-2.5 0.5B (Quantized LLM).
-- **Loaders**: PDF.js, PapaParse, SheetJS.
-- **Highlighter**: Highlight.js & Marked.
+- **AI Core**: `Transformers.js` (Hugging Face)
+- **Embedding Model**: `Xenova/bge-small-en-v1.5` (~100MB)
+- **LLM Reasoning**: `onnx-community/Qwen2.5-0.5B-Instruct` (4-bit quantization)
+- **Processing**: WebGPU (Primary) / WASM (Fallback)
+- **Loaders**: `PDF.js`, `PapaParse`, `SheetJS`
+- **UI Architecture**: Glassmorphism CSS with `Marked.js` and `Highlight.js`
 
-## Project Structure
+## 📁 Repository Structure
 ```text
 ai-data-chat/
-├── backend/            # RAG pipeline logic and FastAPI app
-│   ├── api.py          # API endpoints
-│   ├── chunking.py     # Document text chunking
-│   ├── embedding.py    # Vector embeddings generation
-│   ├── llm_runner.py   # LLM interaction layer
-│   └── rag_pipeline.py # Main RAG process
-├── frontend/           # Web-based chat interface
-│   ├── chat.html
-│   └── script.js
-├── loaders/            # Custom data loaders for various file types
-│   ├── pdf_loader.py
-│   ├── csv_loader.py
-│   └── excel_loader.py
-└── run.sh              # Quick start script
+├── frontend/           # The entire application logic
+│   ├── chat.html       # UI Layout & Design
+│   ├── script.js       # Main controller & UI logic
+│   └── worker.js       # The AI Intelligence Engine (Web Worker)
+└── README.md
 ```
 
-## Setup & Installation
-
-### Prerequisites
-- Python 3.8+
-- [Optional] Virtual environment-aware terminal
-
-### Installation
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/Ixtjayson-creator/Aidata.git
-   cd Aidata
-   ```
-
-2. **Create and activate a virtual environment**:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-   ```
-
-3. **Install dependencies**:
-   *(Ensure you have a `requirements.txt` or install the packages manually)*
-   ```bash
-   pip install fastapi uvicorn faiss-cpu sentence-transformers pypdf pandas openpyxl
-   ```
-
-4. **Prepare directories**:
-   The app uses `uploads/` for documents and `vector_store/` for index storage.
-   ```bash
-   mkdir uploads vector_store
-   ```
-
-### Running the Application
-Use the provided `run.sh` script or launch manually:
-```bash
-./run.sh
-```
-Or:
-```bash
-python -m backend.main
-```
-The backend will be available at `http://localhost:8000`. You can open `frontend/chat.html` in your browser to start chatting!
-
-## Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
+## 🔒 Privacy & Security
+DataMind Edge AI is built with a "Privacy First" philosophy. 
+- **No Data Uploads**: Your files never leave your computer.
+- **Local Indexing**: The vector store is created in the browser's temporary memory.
+- **Local Inference**: All AI "thinking" happens on your GPU/CPU.
 
 ## License
 MIT License
