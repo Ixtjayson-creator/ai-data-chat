@@ -1,13 +1,25 @@
-# AI Data Chat
+# DataMind Edge AI 🚀
 
-AI Data Chat is a Retrieval-Augmented Generation (RAG) pipeline and FastAPI backend that allows users to chat with their data from various file formats like PDF, CSV, and Excel. 
+A high-performance, **serverless** document intelligence platform that runs entirely in your browser. No data ever leaves your machine—even the AI reasoning is local.
 
-## Features
-- **Multi-format Support**: Ingest data from PDF, CSV, and Excel files.
-- **RAG Pipeline**: Efficiently retrieves relevant context from your documents to provide accurate answers.
-- **FastAPI Backend**: A high-performance, asynchronous backend for handling requests and data processing.
-- **Interactive Frontend**: Simple and intuitive web-based chat interface.
-- **Session Support**: Manage interactive chat sessions with historical context.
+## ✨ Key Features
+- **Browser-Native AI**: Powered by `Transformers.js` (WebGPU accelerated).
+- **Zero-Backend**: No server required. Simply open `chat.html`.
+- **Absolute Privacy**: Documents are indexed and queried in your browser's private memory.
+- **Smart RAG**: Supports PDF, CSV, and Excel with semantic chunking and source citations.
+- **Enterprise UI**: Premium glassmorphism design with professional markdown rendering.
+
+## 🛠️ How to Use
+1.  **Open** the `frontend/chat.html` file in any modern browser (Chrome/Edge recommended for WebGPU).
+2.  **Wait** a few seconds for the AI Intelligence engine to initialize (first-time download is ~150MB).
+3.  **Upload** your documents in the sidebar.
+4.  **Chat** with your data!
+
+## 🧠 Technology Stack
+- **AI Core**: Transformers.js (v2/v3).
+- **Models**: BGE-Small (Embeddings) + Qwen-2.5 0.5B (Quantized LLM).
+- **Loaders**: PDF.js, PapaParse, SheetJS.
+- **Highlighter**: Highlight.js & Marked.
 
 ## Project Structure
 ```text
